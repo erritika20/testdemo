@@ -44,10 +44,10 @@ modules:
     build-result: resources
     requires:
     - artifacts:
-      - testdemo.zip
-      name: testdemo
+      - comfioneertestdemo.zip
+      name: comfioneertestdemo
       target-path: resources/
-- name: testdemo
+- name: comfioneertestdemo
   type: html5
   path: testdemo
   build-parameters:
