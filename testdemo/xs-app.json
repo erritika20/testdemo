@@ -1,0 +1,52 @@
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+      "destination": "corebanking01",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/pqm/quote/basic/(.*)$",
+      "target": "/A2A/csiroot/ipw/quo/odata.svc/$1",
+      "destination": "c4ipqm-tu",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/pqm/underwriting/basic/(.*)$",
+      "target": "/A2A/csiroot/ipw/uw/odata.svc/$1",
+      "destination": "c4ipqm-tu",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/pqm/rest/quote/basic/(.*)$", 
+      "target": "/A2A/csiroot/ipw/flow/c4i/$1",
+      "destination": "c4ipqm-tu",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
