@@ -1,0 +1,94 @@
+_schema-version: "3.2"
+ID: testdemo
+description: Test demo MTA
+version: 0.0.1
+modules:
+- name: testdemo-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: testdemo-destination-service
+    parameters:
+      content-target: true
+  - name: testdemo-repo-host
+    parameters:
+      service-key:
+        name: testdemo-repo-host-key
+  - name: testdemo-uaa
+    parameters:
+      service-key:
+        name: testdemo-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: testdemo_html_repo_host
+          ServiceInstanceName: testdemo-html5-service
+          ServiceKeyName: testdemo-repo-host-key
+          sap.cloud.service: testdemo
+        - Authentication: OAuth2UserTokenExchange
+          Name: testdemo_uaa
+          ServiceInstanceName: testdemo-xsuaa-service
+          ServiceKeyName: testdemo-uaa-key
+          sap.cloud.service: testdemo
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+- name: testdemo-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: testdemo-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - testdemo.zip
+      name: testdemo
+      target-path: resources/
+- name: testdemo
+  type: html5
+  path: testdemo
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: testdemo-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: testdemo-destination-service
+    service-plan: lite
+- name: testdemo-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: testdemo-xsuaa-service
+    service-plan: application
+- name: testdemo-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: testdemo-html5-service
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
